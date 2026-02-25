@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opswise – Open Source DevOps Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --white: #FFFFFF;
+      --teal: #0D9488;
+      --teal-light: #CCFBF1;
+      --teal-mid: #5EEAD4;
+      --blue: #3B82F6;
+      --blue-light: #EFF6FF;
+      --violet: #7C3AED;
+      --text: #1E293B;
+      --text2: #475569;
+      --muted: #94A3B8;
+      --border: #E2E8F0;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248,250,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 28px; height: 28px;
+      background: var(--teal);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+      font-weight: 700;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--text2); text-decoration: none; font-size: 14px; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--teal); }
+
+    .nav-right { display: flex; gap: 10px; align-items: center; }
+
+    .btn-sm {
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      font-family: 'IBM Plex Sans', sans-serif;
+      transition: all 0.15s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-outline { border: 1px solid var(--border); color: var(--text2); background: var(--white); }
+    .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-fill { background: var(--teal); color: white; }
+    .btn-fill:hover { background: #0F766E; }
+
+    /* HERO */
+    .hero {
+      padding: 80px 48px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--teal-light);
+      color: var(--teal);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: clamp(30px, 3.5vw, 46px);
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .hero-title .accent { color: var(--teal); }
+
+    .hero-desc {
+      color: var(--text2);
+      font-size: 15px;
+      line-height: 1.75;
+      margin-bottom: 36px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn-hero {
+      padding: 11px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      font-family: 'IBM Plex Sans', sans-serif;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-hero.primary { background: var(--teal); color: white; box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
+    .btn-hero.primary:hover { background: #0F766E; transform: translateY(-1px); }
+    .btn-hero.ghost { background: var(--white); color: var(--text); border: 1px solid var(--border); }
+    .btn-hero.ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+    .hero-visual {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .visual-topbar {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vt-dots { display: flex; gap: 6px; }
+    .vt-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .vt-r { background: #FCA5A5; }
+    .vt-y { background: #FCD34D; }
+    .vt-g { background: #6EE7B7; }
+    .vt-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+
+    .visual-body { padding: 16px; }
+
+    .deploy-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      transition: background 0.15s;
+    }
+
+    .deploy-step:hover { background: var(--bg); }
+
+    .step-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .icon-done { background: #D1FAE5; }
+    .icon-active { background: var(--teal-light); }
+    .icon-wait { background: #F1F5F9; }
+
+    .step-info { flex: 1; }
+    .step-title { font-size: 13px; font-weight: 500; color: var(--text); }
+    .step-sub { font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: var(--muted); }
+
+    .step-badge {
+      font-size: 11px;
+      font-family: 'IBM Plex Mono', monospace;
+      padding: 3px 8px;
+      border-radius: 100px;
+      flex-shrink: 0;
+    }
+
+    .badge-done { background: #D1FAE5; color: #065F46; }
+    .badge-run { background: var(--teal-light); color: var(--teal); }
+    .badge-wait { background: #F1F5F9; color: var(--muted); }
+
+    /* SECTIONS */
+    .section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+
+    .section-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--teal);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: clamp(24px, 2.8vw, 34px);
+      color: var(--text);
+      letter-spacing: -0.3px;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--text2);
+      font-size: 15px;
+      max-width: 520px;
+      margin-bottom: 44px;
+      line-height: 1.7;
+    }
+
+    .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .tier-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: all 0.2s;
+      box-shadow: var(--shadow);
+    }
+
+    .tier-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--teal-mid); }
+
+    .tier-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+    .tier-emoji { font-size: 30px; margin-bottom: 14px; display: block; }
+    .tier-name { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 17px; color: var(--text); margin-bottom: 8px; }
+    .tier-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+    .tier-tools { margin-top: 16px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .tool-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 3px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text2);
+    }
+
+    .modules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .module {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .module-stripe { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .stripe-teal { background: var(--teal); }
+    .stripe-blue { background: var(--blue); }
+    .stripe-violet { background: var(--violet); }
+
+    .module-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .status-wip { background: var(--teal-light); color: var(--teal); }
+    .status-soon { background: #EFF6FF; color: var(--blue); }
+    .status-later { background: #F5F3FF; color: var(--violet); }
+
+    .module-title { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+    .module-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .feat {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .feat-icon { font-size: 22px; margin-bottom: 12px; display: block; }
+    .feat-title { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .feat-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+    .cta-band { background: var(--teal); padding: 64px 48px; text-align: center; }
+    .cta-band h2 { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: clamp(24px, 3vw, 36px); color: white; margin-bottom: 12px; }
+    .cta-band p { color: rgba(255,255,255,0.8); font-size: 15px; margin-bottom: 32px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-white {
+      padding: 11px 24px; background: white; color: var(--teal); border-radius: 10px;
+      font-size: 14px; font-weight: 500; text-decoration: none;
+      font-family: 'IBM Plex Sans', sans-serif; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+
+    .btn-white:hover { background: #F0FDFA; transform: translateY(-1px); }
+
+    .btn-white-outline {
+      padding: 11px 24px; background: transparent; color: white;
+      border: 1px solid rgba(255,255,255,0.4); border-radius: 10px;
+      font-size: 14px; font-weight: 500; text-decoration: none;
+      font-family: 'IBM Plex Sans', sans-serif; transition: all 0.15s;
+    }
+
+    .btn-white-outline:hover { border-color: white; background: rgba(255,255,255,0.1); }
+
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px;
+      color: var(--text); display: flex; align-items: center; gap: 7px; text-decoration: none;
+    }
+
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--teal); }
+    .footer-copy { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 48px 20px 40px; gap: 40px; }
+      .section { padding: 60px 20px; }
+      .tiers, .modules, .features { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 28px 20px; }
+      .cta-band { padding: 48px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="logo-mark">ow</div>
+      opswise
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="https://github.com/getopswise/opswise">Docs</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="https://github.com/getopswise/opswise" class="btn-sm btn-outline">⭐ GitHub</a>
+      <a href="https://github.com/getopswise/opswise" class="btn-sm btn-fill">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="hero-eyebrow">● Open Source · Apache 2.0</div>
+      <h1 class="hero-title">
+        Deploy your DevOps stack<br>
+        on <span class="accent">any infrastructure</span>.<br>
+        No team needed.
+      </h1>
+      <p class="hero-desc">
+        Opswise installs Grafana, Prometheus, GitLab, Harbor and more — directly on your VMs,
+        as Docker Compose, or on Kubernetes. You provide the IPs, Opswise does the rest.
+      </p>
+      <div class="hero-actions">
+        <a href="https://github.com/getopswise/opswise" class="btn-hero primary">→ Get Started</a>
+        <a href="https://github.com/getopswise/opswise" class="btn-hero ghost">View on GitHub</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="visual-topbar">
+        <div class="vt-dots">
+          <div class="vt-dot vt-r"></div>
+          <div class="vt-dot vt-y"></div>
+          <div class="vt-dot vt-g"></div>
+        </div>
+        <span class="vt-title">Deploying: Monitoring Stack · 10.0.0.10</span>
+      </div>
+      <div class="visual-body">
+        <div class="deploy-step">
+          <div class="step-icon icon-done">✅</div>
+          <div class="step-info">
+            <div class="step-title">OS preparation</div>
+            <div class="step-sub">ansible: system-baseline.yml</div>
+          </div>
+          <div class="step-badge badge-done">done</div>
+        </div>
+        <div class="deploy-step">
+          <div class="step-icon icon-done">✅</div>
+          <div class="step-info">
+            <div class="step-title">Install Prometheus</div>
+            <div class="step-sub">systemd service · v2.51.0</div>
+          </div>
+          <div class="step-badge badge-done">done</div>
+        </div>
+        <div class="deploy-step">
+          <div class="step-icon icon-active">⚙️</div>
+          <div class="step-info">
+            <div class="step-title">Install Grafana</div>
+            <div class="step-sub">ansible: grafana-install.yml</div>
+          </div>
+          <div class="step-badge badge-run">running</div>
+        </div>
+        <div class="deploy-step">
+          <div class="step-icon icon-wait">⏳</div>
+          <div class="step-info">
+            <div class="step-title">Configure dashboards</div>
+            <div class="step-sub">helm: grafana-dashboards</div>
+          </div>
+          <div class="step-badge badge-wait">waiting</div>
+        </div>
+        <div class="deploy-step">
+          <div class="step-icon icon-wait">📤</div>
+          <div class="step-info">
+            <div class="step-title">Push code to Git</div>
+            <div class="step-sub">→ gitlab.company.internal</div>
+          </div>
+          <div class="step-badge badge-wait">waiting</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="how-it-works">
+    <div class="section-tag">How it works</div>
+    <h2 class="section-title">One platform, three deployment modes.</h2>
+    <p class="section-desc">Start where your infrastructure is today. No need to containerize everything before you can use modern DevOps tooling.</p>
+    <div class="tiers">
+      <div class="tier-card">
+        <div class="tier-num">TIER 01</div>
+        <span class="tier-emoji">🖥️</span>
+        <div class="tier-name">Bare Metal & VMs</div>
+        <div class="tier-desc">Services installed directly via Ansible as systemd units. No container runtime needed. Ideal for teams not yet ready for Docker.</div>
+        <div class="tier-tools">
+          <span class="tool-tag">ansible</span>
+          <span class="tool-tag">systemd</span>
+          <span class="tool-tag">terraform</span>
+        </div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-num">TIER 02</div>
+        <span class="tier-emoji">🐳</span>
+        <div class="tier-name">Docker & Compose</div>
+        <div class="tier-desc">Deploy full application stacks as Docker Compose services. Easy to update, easy to understand, no Kubernetes overhead.</div>
+        <div class="tier-tools">
+          <span class="tool-tag">docker</span>
+          <span class="tool-tag">compose</span>
+          <span class="tool-tag">ansible</span>
+        </div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-num">TIER 03</div>
+        <span class="tier-emoji">☸️</span>
+        <div class="tier-name">Kubernetes</div>
+        <div class="tier-desc">Bootstrap RKE2 or k3s from scratch, then deploy applications via Helm with full GitOps workflows using ArgoCD.</div>
+        <div class="tier-tools">
+          <span class="tool-tag">rke2</span>
+          <span class="tool-tag">helm</span>
+          <span class="tool-tag">argocd</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="modules">
+    <div class="section-tag">Platform Modules</div>
+    <h2 class="section-title">From deployment to intelligent ops.</h2>
+    <p class="section-desc">Opswise covers the entire infrastructure lifecycle — deploy it, observe it, and let AI help you run it.</p>
+    <div class="modules">
+      <div class="module">
+        <div class="module-stripe stripe-teal"></div>
+        <div class="module-status status-wip">🚧 In Development</div>
+        <div class="module-title">Opswise Deploy</div>
+        <div class="module-desc">Bootstrap infrastructure through a simple GUI. Choose your stack, enter your VM IPs, and Opswise runs the Ansible playbooks. All generated code can be pushed to your own Git repository.</div>
+      </div>
+      <div class="module">
+        <div class="module-stripe stripe-blue"></div>
+        <div class="module-status status-soon">📋 Coming Soon</div>
+        <div class="module-title">Opswise Observe</div>
+        <div class="module-desc">Unified monitoring and alerting across all deployed stacks. Prometheus, Grafana, and Loki configured automatically and connected out of the box.</div>
+      </div>
+      <div class="module">
+        <div class="module-stripe stripe-violet"></div>
+        <div class="module-status status-later">🤖 Planned</div>
+        <div class="module-title">Opswise AI</div>
+        <div class="module-desc">AI-powered incident detection and autonomous response. Define agents in the GUI — fully on-premise, no data leaves your network.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="features">
+    <div class="section-tag">Why Opswise</div>
+    <h2 class="section-title">Everything open. Nothing hidden.</h2>
+    <p class="section-desc">No black boxes on your infrastructure. All automation code is fully open source and auditable.</p>
+    <div class="features">
+      <div class="feat">
+        <span class="feat-icon">🔓</span>
+        <div class="feat-title">Fully Open Source</div>
+        <div class="feat-desc">Apache 2.0 licensed. All Ansible playbooks, Helm charts and Compose files are readable, forkable and customizable.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">🏠</span>
+        <div class="feat-title">On-Premise First</div>
+        <div class="feat-desc">Built for enterprises that can't send data to external services. Everything runs inside your own network.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">📤</span>
+        <div class="feat-title">Push to Git</div>
+        <div class="feat-desc">All generated code can be pushed to your GitLab, GitHub, or Gitea. Full GitOps from day one.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">📦</span>
+        <div class="feat-title">Stack Marketplace</div>
+        <div class="feat-desc">Choose from predefined stacks: Monitoring, CI/CD, Vibe Coding, Security. Community-contributed and tested.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">🔧</span>
+        <div class="feat-title">No Vendor Lock-in</div>
+        <div class="feat-desc">Standard tools under the hood. Ansible, Helm, Terraform, Compose. Always usable without Opswise.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">🤝</span>
+        <div class="feat-title">Enterprise Support</div>
+        <div class="feat-desc">Open source is free forever. Need SLAs, custom stacks, or dedicated support? Enterprise contracts available.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <h2>Ready to simplify your infrastructure?</h2>
+    <p>Opswise is in active development. Star the repo and be among the first to try it.</p>
+    <div class="cta-btns">
+      <a href="https://github.com/getopswise/opswise" class="btn-white">⭐ Star on GitHub</a>
+      <a href="mailto:hello@opswise.org" class="btn-white-outline">Contact for Enterprise</a>
+    </div>
+  </div>
+
+  <footer>
+    <a href="/" class="footer-logo">
+      <div class="logo-mark" style="width:22px;height:22px;font-size:11px;">ow</div>
+      opswise
+    </a>
+    <ul class="footer-links">
+      <li><a href="https://github.com/getopswise/opswise">GitHub</a></li>
+      <li><a href="https://github.com/getopswise/opswise/blob/main/LICENSE">License</a></li>
+      <li><a href="mailto:hello@opswise.org">Contact</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 Opswise · Apache 2.0</div>
+  </footer>
+
+</body>
+</html>
